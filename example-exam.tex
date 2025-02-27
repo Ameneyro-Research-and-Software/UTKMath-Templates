@@ -1,6 +1,7 @@
 \documentclass{UTKMathExam}
 
-\usepackage{UTKMathProblems}
+\usepackage{xstring}
+\usepackage{UTKMathMacros}
 
 %--------- Default Values, Uncomment and Change if Needed ---------
 %\SetCourse{Math 123} % Set your course name
@@ -16,7 +17,12 @@
 \SetVersionID{\vary{A}{B}} % Set the IDs of the version that you want to compile
 
 %--------- Show\Hide Solutions ---------
-\SetupExSheets{solution/print=true} % Show solutions (true) or don't (false)
+\IfSubStr{\jobname}{\detokenize{key}}{%
+  \SetupExSheets{solution/print=true}
+}{}
+%If jobname contains 'key', the compiled document will automatically show solution and rubric
+
+%\SetupExSheets{solution/print=true} % Show solutions (true) or don't (false)
 %\SetupExSheets{solution/print=false} % Show solutions (true) or don't (false)
 
 
