@@ -1,0 +1,139 @@
+\ExplSyntaxOn
+\group_begin:
+\fp_new:N \l_savings_recurring_principal_rate_fp
+\int_new:N \l_savings_recurring_principal_term_int
+\fp_new:N \l_savings_recurring_principal_principal_fp
+\fp_new:N \l_savings_recurring_principal_deposits_fp
+
+% --------------- Given Values --------------------
+\fp_set:Nn \l_savings_recurring_principal_rate_fp {3.1}
+\int_set:Nn \l_savings_recurring_principal_term_int {5}
+\fp_set:Nn \l_savings_recurring_principal_principal_fp {2000}
+\fp_set:Nn \l_savings_recurring_principal_deposits_fp {250}
+
+% --------------- Computing Other Values --------------------
+\int_new:N \l__savings_recurring_principal_n_int
+\int_set:Nn \l__savings_recurring_principal_n_int {
+  \int_eval:n { \l_savings_recurring_principal_term_int * 12 }
+}
+
+\fp_new:N \l_savings_recurring_principal_decimal_rate_fp
+\fp_set:Nn \l_savings_recurring_principal_decimal_rate_fp {
+  \fp_eval:n { \l_savings_recurring_principal_rate_fp / 100 }
+}
+
+\fp_new:N \l__savings_recurring_principal_i_fp
+\fp_set:Nn \l__savings_recurring_principal_i_fp {
+  \fp_eval:n { \l_savings_recurring_principal_decimal_rate_fp / 12 }
+}
+
+\fp_new:N \l_savings_recurring_principal_accumulated_fp
+\fp_set:Nn \l_savings_recurring_principal_accumulated_fp {
+  \fp_eval:n {
+    round(
+    \l_savings_recurring_principal_principal_fp *
+    ( 1 + \l__savings_recurring_principal_i_fp )^\l__savings_recurring_principal_n_int
+    ,2)
+  }
+}
+
+\fp_new:N \l_savings_recurring_principal_future_value_fp
+\fp_set:Nn \l_savings_recurring_principal_future_value_fp {
+  \fp_eval:n {
+    round(
+    \l_savings_recurring_principal_deposits_fp *
+    ( ( 1 + \l__savings_recurring_principal_i_fp )^\l__savings_recurring_principal_n_int - 1 ) /
+    \l__savings_recurring_principal_i_fp
+    ,2)
+  }
+}
+
+\fp_new:N \l_savings_recurring_principal_total_savings_fp
+\fp_set:Nn \l_savings_recurring_principal_total_savings_fp {
+  \fp_eval:n {
+    \l_savings_recurring_principal_accumulated_fp + \l_savings_recurring_principal_future_value_fp
+  }
+}
+
+% --------------- Commands to Access Variables in Document --------------------
+\undef\Rate
+\NewDocumentCommand { \Rate } {}
+{
+  \fp_use:N \l_savings_recurring_principal_rate_fp
+}
+\undef\DecimalRate
+\NewDocumentCommand { \DecimalRate } {}
+{
+  \fp_use:N \l_savings_recurring_principal_decimal_rate_fp
+}
+\undef\SavingsTerm
+\NewDocumentCommand { \SavingsTerm } {}
+{
+  \int_use:N \l_savings_recurring_principal_term_int
+}
+\undef\Principal
+\NewDocumentCommand { \Principal } {}
+{
+  \num{\fp_use:N \l_savings_recurring_principal_principal_fp}
+}
+\undef\Deposits
+\NewDocumentCommand { \Deposits } {}
+{
+  \num{\fp_use:N \l_savings_recurring_principal_deposits_fp}
+}
+\undef\TotalSavings
+\NewDocumentCommand { \TotalSavings } {}
+{
+  \num{\fp_use:N \l_savings_recurring_principal_total_savings_fp}
+}
+\undef\Accumulated
+\NewDocumentCommand { \Accumulated } {}
+{
+  \num{\fp_use:N \l_savings_recurring_principal_accumulated_fp}
+}
+\undef\FutureValue
+\NewDocumentCommand { \FutureValue } {}
+{
+  \num{\fp_use:N \l_savings_recurring_principal_future_value_fp}
+}
+\ExplSyntaxOff
+
+
+\begin{question}[class=Z]{10}
+  You want to start a savings account for a graduation trip that you wish to take in \SavingsTerm~years.
+  Your plan is to make an initial deposit of \(\$\Principal\) and then recurring deposits of \(\$\Deposits\) each month into an account paying interest at a rate of \(\Rate\%\) per year compounded monthly.
+  How much will you have saved in the account at the end of the \SavingsTerm~years?\\
+  \FormulaInstructions~\RoundUnitsInstructions
+  \begin{tasks}(7)
+    \task[\selectall] \ A
+    \task[\selectall] \ B
+    \task[\correctselectall] \ C
+    \task[\selectall] \ D
+    \task[\selectall] \ E
+    \task[\correctselectall] \ F
+    \task[\selectall] \ G
+  \end{tasks}
+  \mrubric{1 pt \\ each}
+\end{question}
+\begin{minipage}{0.70\textwidth}
+  \begin{solution}
+    \begin{align*}
+      A = \Principal \left( 1 + \dfrac{\DecimalRate}{12} \right)^{\SavingsTerm\cdot12} &= \Accumulated \\
+      S = \Deposits \left[ \dfrac{\left(1 + \frac{\DecimalRate}{12} \right)^{\SavingsTerm\cdot12} - 1}{\frac{\DecimalRate}{12}} \right] &= \FutureValue \\
+      \text{Total } = A + S &= \TotalSavings
+    \end{align*}
+  \end{solution}
+  \rubric{3 pts each formula and 2 pts final answer}
+\end{minipage}\hspace{\fill}%
+\begin{minipage}{0.25\textwidth}
+  \vspace{1.5in}
+  \AnswerBox{Final Answer:}{\(\$\TotalSavings\)}
+  \vspace{0.1in}
+\end{minipage}
+
+\noindent\rule{\textwidth}{1pt}
+
+
+\ExplSyntaxOn
+\group_begin:
+\ExplSyntaxOff
